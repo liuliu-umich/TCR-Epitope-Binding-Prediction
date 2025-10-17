@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 from PyBioMed.PyProtein import PyProtein
 from PyBioMed.PyProtein import CTD
 
-import squarify
+#import squarify
 
 drive.mount('/content/drive')
 
@@ -63,9 +63,11 @@ def load_df(file_path, columns_to_keep=None, columns_duplicate = None):
     if columns_to_keep:
         df = df[columns_to_keep]
 
+    #sort based on score
+    df = df.sort_values(by='vdjdb.score', ascending=False)
 
     #Replace NA with Unknown where necessary
-    df = df.fillna("Unknown")
+    df = df.dropna()
     if columns_duplicate:
         df.drop_duplicates(subset=columns_duplicate, keep='first', inplace=True)
     else:
@@ -75,11 +77,13 @@ def load_df(file_path, columns_to_keep=None, columns_duplicate = None):
     return df
 
 file_path = '/content/drive/MyDrive/Milestone-II/Datasets/vdjdb.txt'
-columns_to_keep = ['cdr3', 'antigen.epitope', 'vdjdb.score',
-                   'gene', 'antigen.species','species']
-columns_duplicate = ['cdr3', 'antigen.epitope', 'vdjdb.score']
+columns_to_keep = ['cdr3', 'antigen.epitope', 'vdjdb.score']
+columns_duplicate = ['cdr3', 'antigen.epitope']
 df = load_df(file_path, columns_to_keep, columns_duplicate)
 df
+
+print(df.isna().sum().sum())
+print(df.duplicated().sum())
 
 def positive_negative_split(df, use_unknowns = True):
     """
@@ -106,7 +110,7 @@ def positive_negative_split(df, use_unknowns = True):
         neg_df = df[df['vdjdb.score'].isin([1,2])]
         neg_df_sample = neg_df
 
-    pos_df['Population'] = 'Positive'
+    #pos_df['Population'] = 'Positive'
     pos_df['Binding'] = 1
 
     neg_df_sample = neg_df.sample(n=len(pos_df), random_state=42)
@@ -116,19 +120,26 @@ def positive_negative_split(df, use_unknowns = True):
         shuffled_neg = np.random.shuffle(original_neg)
     neg_df_sample['cdr3'] = neg_df_sample['cdr3'].replace(shuffled_neg)
 
-    neg_df_sample['Population'] = 'Negative'
+    #neg_df_sample['Population'] = 'Negative'
     neg_df_sample['Binding'] = 0
 
 
     df_return = pd.concat([pos_df, neg_df_sample])
-    df_return = df_return.fillna("Unknown")
+    df_return = df_return.drop('vdjdb.score', axis =1)
+    df_return = df_return.dropna()
     df_return = df_return.reset_index(drop=True)
 
     return df_return
 
 pn_df = positive_negative_split(df, use_unknowns = True)
-
 pn_df
+
+print(pn_df.isna().sum().sum())
+print(pn_df.duplicated().sum())
+
+test_df = pn_df[['cdr3','antigen.epitope']]
+print(test_df.isna().sum().sum())
+print(test_df.duplicated().sum())
 
 file_path_CN = '/content/drive/MyDrive/Milestone-II/Datasets/VDJdb_CN.csv'
 pn_df.to_csv(file_path_CN, index=False)
@@ -230,10 +241,16 @@ dp_df = get_select_features(pn_df, get_dpc)
 ctd_df = get_select_features(pn_df, get_CTD)
 
 merge_df = pd.concat([aa_df, dp_df, ctd_df], axis=1)
+merge_df
 
 #QC check
 print(merge_df.isnull().sum().sum())
-print(len(merge_df))
+print(merge_df.duplicated().sum())
+
+test_df1 = merge_df[['cdr3','antigen.epitope']]
+print(test_df1.isna().sum().sum())
+print(test_df1.duplicated().sum())
 
 file_path_PP = '/content/drive/MyDrive/Milestone-II/Datasets/VDJdb_CN_PP.csv'
 merge_df.to_csv(file_path_PP, index=False)
+

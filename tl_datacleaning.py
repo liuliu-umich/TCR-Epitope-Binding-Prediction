@@ -55,9 +55,11 @@ def load_df(file_path, columns_to_keep=None, columns_duplicate = None):
     if columns_to_keep:
         df = df[columns_to_keep]
 
+    #sort based on score
+    df = df.sort_values(by='vdjdb.score', ascending=False)
 
     #Replace NA with Unknown where necessary
-    df = df.fillna("Unknown")
+    df = df.dropna()
     if columns_duplicate:
         df.drop_duplicates(subset=columns_duplicate, keep='first', inplace=True)
     else:
@@ -68,9 +70,12 @@ def load_df(file_path, columns_to_keep=None, columns_duplicate = None):
 
 file_path = '/content/drive/MyDrive/Milestone-II/Datasets/vdjdb.txt'
 columns_to_keep = ['cdr3', 'antigen.epitope', 'vdjdb.score']
-columns_duplicate = ['cdr3', 'antigen.epitope', 'vdjdb.score']
+columns_duplicate = ['cdr3', 'antigen.epitope']
 df = load_df(file_path, columns_to_keep, columns_duplicate)
 df
+
+print(df.isna().sum().sum())
+print(df.duplicated().sum())
 
 def positive_negative_split(df, use_unknowns = True):
     """
@@ -112,7 +117,8 @@ def positive_negative_split(df, use_unknowns = True):
 
 
     df_return = pd.concat([pos_df, neg_df_sample])
-    df_return = df_return.fillna("Unknown")
+    df_return = df_return.drop('vdjdb.score', axis =1)
+    df_return = df_return.dropna()
     df_return = df_return.reset_index(drop=True)
 
     return df_return
@@ -121,6 +127,11 @@ pn_df = positive_negative_split(df, use_unknowns = True)
 pn_df
 
 print(pn_df.isnull().sum().sum())
+print(pn_df.duplicated().sum())
+
+test_df = pn_df[['cdr3','antigen.epitope']]
+print(test_df.isna().sum().sum())
+print(test_df.duplicated().sum())
 
 file_path_CN = '/content/drive/MyDrive/Milestone-II/Datasets/VDJdb_CN.csv'
 pn_df.to_csv(file_path_CN, index=False)
