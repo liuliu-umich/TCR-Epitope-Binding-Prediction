@@ -33,7 +33,9 @@ def load_any(path: str, sheet: Optional[str]=None) -> pd.DataFrame:
     p = path.lower()
     if p.endswith(".csv"): return pd.read_csv(path)
     if p.endswith(".tsv"): return pd.read_csv(path, sep="\t")
-    return pd.read_excel(path, sheet_name=sheet)
+    # Pandas returns a dict of DataFrames when sheet_name=None for Excel files.
+    # Default to the first sheet so the CLI works with ordinary single-sheet workbooks.
+    return pd.read_excel(path, sheet_name=0 if sheet is None else sheet)
 
 def clean_seq(s: str) -> Optional[str]:
     if pd.isna(s): return None
@@ -86,12 +88,12 @@ def build_vdj_supervised(df: pd.DataFrame, tcr_col: str, epi_col: str, score_col
     n_neg = int(np.ceil(len(pos) * neg_ratio))
     neg_pool = neg_pool.sample(n_neg, replace=len(neg_pool)<n_neg, random_state=rng.randint(1,1_000_000))
     shuffled_epi = neg_pool[epi_col].sample(frac=1.0, random_state=rng.randint(1,1_000_000)).reset_index(drop=True)
-    neg = neg_pool[[tcr_col]].copy()
+    neg = neg_pool[[tcr_col]].copy().reset_index(drop=True)
     neg[epi_col] = shuffled_epi
     same = neg[epi_col].values == neg_pool[epi_col].values
     if same.any():
         idx = np.where(same)[0]
-        neg.loc[idx, epi_col] = np.roll(neg.loc[idx, epi_col].values, 1)
+        neg.iloc[idx, neg.columns.get_loc(epi_col)] = np.roll(neg.iloc[idx, neg.columns.get_loc(epi_col)].values, 1)
     neg["label"] = 0
     pairs = pd.concat([pos, neg], ignore_index=True).sample(frac=1.0, random_state=rng.randint(1,1_000_000))
     X = pairs.rename(columns={tcr_col:"tcr", epi_col:"epitope"})[["tcr","epitope"]]

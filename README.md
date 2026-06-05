@@ -1,82 +1,155 @@
 # TCR Binding Prediction
 
-This repository presents a computational biology and machine learning project focused on predicting whether a T-cell receptor (TCR) is likely to bind a target antigen epitope from sequence-derived features. The project was built as an end-to-end workflow spanning bioinformatics data preparation, sequence representation engineering, unsupervised feature discovery, and supervised model benchmarking. The main goal was to turn raw TCR-epitope pairing data into a practical modeling pipeline that can help prioritize plausible immune recognition events from sequence information alone.
+TCR Binding Prediction is a sequence ML benchmark and case study built around T-cell receptor and epitope binding prediction. The project packages an end-to-end workflow across curated immunology data, representation engineering, unsupervised exploration, and supervised benchmarking into a single portfolio-quality repository.
 
-## Why This Problem Matters
+## Project Positioning
 
-T-cell receptors recognize antigen peptides presented by major histocompatibility complexes, and predicting these interactions is an important challenge in immunology, therapeutic design, and biomarker discovery. Reliable sequence-based prioritization can support downstream experimental work by narrowing large candidate spaces to the most promising TCR-epitope matches.
+This repository is intentionally presented as a `benchmark / case study`.
 
-## What I Built
+Its purpose is to show complete sequence-ML execution from data preparation to model comparison and result communication, with an emphasis on clarity, reproducibility, and portfolio-ready presentation.
 
-This project covers the full modeling workflow:
+## Problem
 
-- Cleaned and filtered TCR-epitope datasets derived from VDJdb and related external data sources.
-- Constructed positive and negative binding examples for supervised learning.
-- Engineered sequence features using amino acid composition descriptors, one-hot sequence representations, and ESM-based protein language model embeddings.
-- Built unsupervised features with PCA, UMAP, and KMeans to compress and structure high-dimensional sequence representations.
-- Benchmarked supervised models including Logistic Regression, Random Forest, and XGBoost for TCR-epitope binding prediction.
+Predicting whether a T-cell receptor is likely to bind a target antigen epitope is a difficult sequence-learning problem with clear relevance to immunology, therapeutic discovery, and candidate prioritization. This project focuses on the practical ML question: how far can curated sequence features and compact benchmarks take us on TCR-epitope binding prediction?
 
-## Data Sources
+## Dataset
 
-- `VDJdb` is the primary curated data source used for known TCR sequences with antigen specificity annotations.
-- `TRAIT`-style data is used in the repository as an external validation-style dataset and as part of the broader data preparation workflow.
-- Local processed artifacts are stored in [`Datasets/`](/Users/newuser/TCR_Binding_Prediction/Datasets).
+- `VDJdb` is the primary source for curated TCR-epitope binding records.
+- The repository includes processed artifacts under [`Datasets`](/Users/newuser/TCR_Binding_Prediction/Datasets) for benchmark-style experiments.
+- `TRAITdb` is included as an auxiliary validation-style dataset in the broader project workflow.
+- The recommended benchmark-friendly feature table is packaged as `Datasets/VDJdb_CN_PP.zip`, which contains the curated representation-engineered CSV used in the final comparison workflow.
 
-## Method Overview
+## Representation Methods
 
-The repository reflects a staged pipeline rather than a single script:
+- amino acid composition descriptors
+- dipeptide composition features
+- CTD physicochemical descriptors
+- one-hot encodings for TCR and epitope sequences
+- ESM protein language model embeddings
+- PCA, UMAP, and KMeans-derived unsupervised features
 
-1. Data cleaning and pair construction
-   Raw sequence files are cleaned, filtered to relevant records, deduplicated, and transformed into positive/negative TCR-epitope pairing datasets.
-2. Sequence feature engineering
-   The project generates multiple representations of TCR and epitope sequences, including amino acid composition features, one-hot encodings, and ESM embeddings.
-3. Unsupervised representation analysis
-   High-dimensional sequence features are explored and compressed with PCA and UMAP, then clustered with KMeans to derive additional structure-aware features.
-4. Supervised learning and evaluation
-   The engineered and derived features are used to train and compare classical ML models for binary binding prediction.
+## Models Compared
 
-## Results Highlights
+- Logistic Regression
+- Random Forest
+- XGBoost
 
-- The strongest visible result in [`SupervisedLearningV4.ipynb`](/Users/newuser/TCR_Binding_Prediction/SupervisedLearningV4.ipynb) reports `ROC-AUC 0.9198`, `F1 0.8541`, and `Accuracy 0.8399`.
-- The project compares multiple baselines rather than relying on a single model family, including Logistic Regression, Random Forest, and XGBoost.
-- The supervised notebooks indicate that enriched sequence representations and derived unsupervised features improved the quality of downstream classification experiments.
+The final benchmark compares both full feature sets and top-200 feature subsets selected from model-specific importance signals.
 
-## Repository Guide
+## Top Results
 
-- [`data_prep.py`](/Users/newuser/TCR_Binding_Prediction/data_prep.py) and [`tl_datacleaning.py`](/Users/newuser/TCR_Binding_Prediction/tl_datacleaning.py)
-  Data cleaning, filtering, and positive/negative dataset construction.
-- [`pybiomed_features.py`](/Users/newuser/TCR_Binding_Prediction/pybiomed_features.py) and [`protein_seq_representation_extraction.ipynb`](/Users/newuser/TCR_Binding_Prediction/protein_seq_representation_extraction.ipynb)
-  Sequence featurization using composition-based features, one-hot representations, and ESM embeddings.
-- [`unsupervised learning.ipynb`](/Users/newuser/TCR_Binding_Prediction/unsupervised%20learning.ipynb) and [`utils/unsupervised.py`](/Users/newuser/TCR_Binding_Prediction/utils/unsupervised.py)
-  Dimensionality reduction, clustering, and derived unsupervised feature generation.
-- [`SupervisedLearningV3.ipynb`](/Users/newuser/TCR_Binding_Prediction/SupervisedLearningV3.ipynb), [`SupervisedLearningV4.ipynb`](/Users/newuser/TCR_Binding_Prediction/SupervisedLearningV4.ipynb), and [`supervised_learning.py`](/Users/newuser/TCR_Binding_Prediction/supervised_learning.py)
-  Model training, benchmark comparison, and evaluation workflows.
-- [`Datasets/`](/Users/newuser/TCR_Binding_Prediction/Datasets)
-  Source and processed dataset artifacts used throughout the notebooks and scripts.
+The strongest headline result in the final benchmark lineage is:
 
-## Technical Skills Demonstrated
+- `XGBoost (top 200 features)`: `ROC-AUC 0.9198`, `F1 0.8541`, `Accuracy 0.8399`, `Precision 0.7844`, `Recall 0.9374`
 
-- Bioinformatics data cleaning and sequence-focused dataset preparation
-- Positive/negative sample construction for biological classification tasks
-- Protein and TCR sequence feature engineering
-- Dimensionality reduction and clustering for high-dimensional biological data
-- Classical machine learning benchmarking and metric-based evaluation
-- Python-based notebook workflow for exploratory modeling and analysis
+Additional benchmark snapshots from the same notebook:
 
-## How To Explore This Repo
+| Model | Setting | ROC-AUC | F1 | Accuracy |
+| --- | --- | ---: | ---: | ---: |
+| Logistic Regression | all features | 0.9136 | 0.8442 | 0.8328 |
+| Random Forest | all features | 0.9147 | 0.8510 | 0.8389 |
+| XGBoost | all features | 0.9145 | 0.8497 | 0.8351 |
+| Logistic Regression | top 200 | 0.9061 | 0.8410 | 0.8261 |
+| Random Forest | top 200 | 0.9184 | 0.8482 | 0.8391 |
+| XGBoost | top 200 | **0.9198** | **0.8541** | **0.8399** |
 
-1. Start with this README for the high-level project framing.
-2. Open [`protein_seq_representation_extraction.ipynb`](/Users/newuser/TCR_Binding_Prediction/protein_seq_representation_extraction.ipynb) to review how sequence embeddings and representations were generated.
-3. Review [`unsupervised learning.ipynb`](/Users/newuser/TCR_Binding_Prediction/unsupervised%20learning.ipynb) to see PCA, UMAP, and clustering experiments.
-4. Inspect [`SupervisedLearningV4.ipynb`](/Users/newuser/TCR_Binding_Prediction/SupervisedLearningV4.ipynb) for the clearest final model comparison and headline metrics.
+## Workflow
 
-## Limitations and Future Improvements
+![Workflow](docs/figures/workflow.svg)
 
-- The project is currently notebook-heavy, which makes the workflow more exploratory than productionized.
-- Reproducibility can be improved with a dedicated dependency file and a more standardized environment setup.
-- The training and evaluation path could be consolidated into a cleaner package or pipeline structure.
-- Future work could include deeper biological validation, stronger external testing, and a more formalized experiment tracking setup.
+The project is organized around four stages:
 
-## Reference
+1. `data prep`
+2. `feature extraction`
+3. `unsupervised exploration`
+4. `supervised benchmark`
 
-VDJdb: Shugay M, Bagaev DV, Zvyagin IV, Vroomans RM, Crawford JC, Dolton G, Komech EA, Sycheva AL, Koneva AE, Egorov ES, Eliseev AV, Van Dyk E, Dash P, Attaf M, Rius C, Ladell K, McLaren JE, Matthews KK, Clemens EB, Douek DC, Luciani F, van Baarle D, Kedzierska K, Kesmir C, Thomas PG, Price DA, Sewell AK, Chudakov DM. "VDJdb: a curated database of T-cell receptor sequences with known antigen specificity." *Nucleic Acids Research* 46(D1), 2018.
+## Recommended Entry
+
+The repo is script-first for a quick, reproducible starting point.
+
+### 1. Setup
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+For the notebook stack and extra visualization tooling:
+
+```bash
+pip install -r requirements-notebooks.txt
+```
+
+### 2. Train the baseline
+
+[`train_baseline.py`](/Users/newuser/TCR_Binding_Prediction/train_baseline.py) is the main entrypoint.
+
+```bash
+python3 train_baseline.py \
+  --vdjdb-path Datasets/VDJdb_clean.xlsx \
+  --model-out artifacts/tcr_binding_baseline.pkl
+```
+
+Optional external-style validation:
+
+```bash
+python3 train_baseline.py \
+  --vdjdb-path Datasets/VDJdb_clean.xlsx \
+  --model-out artifacts/tcr_binding_baseline.pkl \
+  --validate-trait
+```
+
+### 3. Run the small demo
+
+[`sample_inference.py`](/Users/newuser/TCR_Binding_Prediction/sample_inference.py) loads a trained artifact and scores one pair or a CSV batch.
+
+```bash
+python3 sample_inference.py \
+  --model artifacts/tcr_binding_baseline.pkl \
+  --tcr CASSTRSSYEQYF \
+  --epitope GILGFVFTL
+```
+
+## Notebooks
+
+The main presentation lives directly in this `README`, with the notebooks preserved as the original exploratory workflow.
+
+If you want the original exploratory workflow, the source notebooks are available under [`notebooks`](/Users/newuser/TCR_Binding_Prediction/notebooks):
+
+- [`notebooks/01_feature_extraction.ipynb`](/Users/newuser/TCR_Binding_Prediction/notebooks/01_feature_extraction.ipynb)
+- [`notebooks/02_unsupervised_exploration.ipynb`](/Users/newuser/TCR_Binding_Prediction/notebooks/02_unsupervised_exploration.ipynb)
+- [`notebooks/03_supervised_benchmark_v3.ipynb`](/Users/newuser/TCR_Binding_Prediction/notebooks/03_supervised_benchmark_v3.ipynb)
+- [`notebooks/04_supervised_benchmark_v4.ipynb`](/Users/newuser/TCR_Binding_Prediction/notebooks/04_supervised_benchmark_v4.ipynb)
+
+Course-era extras and withdrawn presentation-only files remain in [`docs/archive`](/Users/newuser/TCR_Binding_Prediction/docs/archive).
+
+## Results Gallery
+
+### ROC / PR Curves
+
+![ROC and PR curves](docs/figures/roc_pr_curves.png)
+
+### Confusion Matrix
+
+![Confusion matrix](docs/figures/confusion_matrix.svg)
+
+### Embedding Visualization
+
+![Embedding visualization](docs/figures/embedding_visualization.png)
+
+## Scope And Notes
+
+- This repository focuses on a curated benchmark workflow for sequence ML.
+- Negative examples are generated for supervised comparison, so reported performance reflects the benchmark construction used in this project.
+- The strongest results come from notebook-driven experimentation supported by reusable scripts and curated artifacts.
+- Biological validation, calibration under broader deployment settings, and uncertainty analysis are natural next-step extensions.
+- The overall scope is optimized for a complete, polished showcase of end-to-end ML work.
+
+## Repository Notes
+
+- [`supervised_learning.py`](/Users/newuser/TCR_Binding_Prediction/supervised_learning.py) remains the reusable training foundation used by the script entrypoint.
+- Original exploratory preprocessing scripts now live in [`scripts`](/Users/newuser/TCR_Binding_Prediction/scripts).
+- [`docs/archive/MilestoneII_FinalReport_Group7.pdf`](/Users/newuser/TCR_Binding_Prediction/docs/archive/MilestoneII_FinalReport_Group7.pdf) is preserved as project provenance and historical context.
+- Original exploratory notebooks live in [`notebooks`](/Users/newuser/TCR_Binding_Prediction/notebooks), while older support material stays in [`docs/archive`](/Users/newuser/TCR_Binding_Prediction/docs/archive).

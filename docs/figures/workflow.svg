@@ -1,0 +1,37 @@
+<svg width="1200" height="380" viewBox="0 0 1200 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="380" rx="28" fill="#F5F7F4"/>
+  <text x="70" y="78" fill="#163020" font-family="Helvetica, Arial, sans-serif" font-size="34" font-weight="700">TCR Binding Prediction Workflow</text>
+  <text x="70" y="112" fill="#4D6357" font-family="Helvetica, Arial, sans-serif" font-size="18">A portfolio-style sequence ML pipeline from curated pairs to benchmark evaluation.</text>
+
+  <rect x="70" y="155" width="240" height="140" rx="24" fill="#DCEFD9" stroke="#6A9C78" stroke-width="2"/>
+  <text x="96" y="196" fill="#163020" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="700">1. Data Prep</text>
+  <text x="96" y="228" fill="#315140" font-family="Helvetica, Arial, sans-serif" font-size="18">VDJdb cleanup</text>
+  <text x="96" y="254" fill="#315140" font-family="Helvetica, Arial, sans-serif" font-size="18">positive / negative pairs</text>
+  <text x="96" y="280" fill="#315140" font-family="Helvetica, Arial, sans-serif" font-size="18">curated benchmark tables</text>
+
+  <rect x="350" y="155" width="240" height="140" rx="24" fill="#FFF1D6" stroke="#D49A32" stroke-width="2"/>
+  <text x="376" y="196" fill="#5C3E09" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="700">2. Feature Extraction</text>
+  <text x="376" y="228" fill="#7B5A1B" font-family="Helvetica, Arial, sans-serif" font-size="18">AAC / DPC / CTD</text>
+  <text x="376" y="254" fill="#7B5A1B" font-family="Helvetica, Arial, sans-serif" font-size="18">one-hot encodings</text>
+  <text x="376" y="280" fill="#7B5A1B" font-family="Helvetica, Arial, sans-serif" font-size="18">ESM sequence embeddings</text>
+
+  <rect x="630" y="155" width="240" height="140" rx="24" fill="#DCE8FF" stroke="#5A84D6" stroke-width="2"/>
+  <text x="656" y="196" fill="#163C7A" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="700">3. Unsupervised Exploration</text>
+  <text x="656" y="228" fill="#365B9B" font-family="Helvetica, Arial, sans-serif" font-size="18">PCA diagnostics</text>
+  <text x="656" y="254" fill="#365B9B" font-family="Helvetica, Arial, sans-serif" font-size="18">UMAP structure discovery</text>
+  <text x="656" y="280" fill="#365B9B" font-family="Helvetica, Arial, sans-serif" font-size="18">KMeans-derived features</text>
+
+  <rect x="910" y="155" width="220" height="140" rx="24" fill="#F8DDE2" stroke="#C85A74" stroke-width="2"/>
+  <text x="936" y="196" fill="#7A2035" font-family="Helvetica, Arial, sans-serif" font-size="24" font-weight="700">4. Supervised Benchmark</text>
+  <text x="936" y="228" fill="#9A4159" font-family="Helvetica, Arial, sans-serif" font-size="18">Logistic regression</text>
+  <text x="936" y="254" fill="#9A4159" font-family="Helvetica, Arial, sans-serif" font-size="18">Random forest</text>
+  <text x="936" y="280" fill="#9A4159" font-family="Helvetica, Arial, sans-serif" font-size="18">XGBoost comparison</text>
+
+  <path d="M311 225H349" stroke="#4D6357" stroke-width="4" stroke-linecap="round"/>
+  <path d="M591 225H629" stroke="#4D6357" stroke-width="4" stroke-linecap="round"/>
+  <path d="M871 225H909" stroke="#4D6357" stroke-width="4" stroke-linecap="round"/>
+
+  <path d="M344 214L359 225L344 236" stroke="#4D6357" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M624 214L639 225L624 236" stroke="#4D6357" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M904 214L919 225L904 236" stroke="#4D6357" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
